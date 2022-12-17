@@ -1,5 +1,6 @@
 from numpy import Inf
 import numpy.linalg as la
+from copy import deepcopy
 
 
 def criterion(x, s, abs=1e-5, rel=1e-6):
@@ -8,7 +9,7 @@ def criterion(x, s, abs=1e-5, rel=1e-6):
 
 # Find df = 0 or extrema of f
 def newton(df, J, x0, maxiter=Inf):
-    x = x0
+    x = deepcopy(x0)
     s = Inf
     crit = Inf
 
