@@ -6,7 +6,7 @@ from copy import deepcopy
 def attach(x, y):
     return concatenate([x, y])
 
-def split_newton(df, J, x0, loc, maxiter=100):
+def split_newton(df, J, x0, loc, maxiter=100, sparse=False):
     if loc > len(x0):
         raise Exception('Incorrect split location')
 
@@ -21,12 +21,12 @@ def split_newton(df, J, x0, loc, maxiter=100):
     while crit >= 1:
         dfb = lambda x: df(attach(xa, x))[loc:]
         Jb = lambda x: J(attach(xa, x))[loc:, loc:]
-        xb, sb = newton(dfb, Jb, xb, maxiter)
+        xb, sb = newton(dfb, Jb, xb, maxiter, sparse=sparse)
         print("B", xb, sb)
 
         dfa = lambda x: df(attach(x, xb))[:loc]
         Ja = lambda x: J(attach(x, xb))[:loc, :loc]
-        xa, sa = newton(dfa, Ja, xa, maxiter)
+        xa, sa = newton(dfa, Ja, xa, 1, sparse=sparse)
         print("A", xa, sa)
 
         xnew = attach(xa, xb)
