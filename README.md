@@ -41,15 +41,17 @@ and the second system
 $\lambda_{c} = 10^{-1}$
 $\lambda_{d} = 10^{-4}$
 
+$ F(u) = \lambda_{a}u^{4}_{1} + ... + \lambda_{b}u^{4}_{\lfloor N/2 \rfloor} + \lambda_{c}u^{4}_{\lceil N/2 \rceil} + ... + \lambda_{d} u^{4}_{N}$
+
 $$
-u' = 0.25 * \begin{bmatrix}
+J(u) = 3 * \begin{bmatrix}
 \lambda_a & \dots & 0 & 0 & \dots & 0 \newline
 \vdots & \ddots & \vdots & \vdots & \ddots & \vdots \newline
 0 & \dots & \lambda_b & 0 & \dots & 0 \newline
 0 & \dots & 0 & \lambda_c & \dots & 0 \newline
 \vdots & \ddots & \vdots & \vdots & \ddots & \vdots \newline
 0 & \dots & 0 & 0 & \dots & \lambda_d
-\end{bmatrix} u^{4}
+\end{bmatrix} u^{2}
 $$
 
 For N=5000 (with no backtracking and pseudo-transient continuation), 
