@@ -11,6 +11,15 @@ Particular applications include
 * [Fast-Slow Reaction-Diffusion systems](https://en.wikipedia.org/wiki/Reaction%E2%80%93diffusion_system)
 * [CFD](https://en.wikipedia.org/wiki/Computational_fluid_dynamics) - Pressure-Velocity coupling
 
+## What does 'split' mean?
+
+The system is divided into two and for ease of communication, let's refer to first set of variables as "outer" and the second as "inner".
+
+* Holding the outer variables fixed, Newton iteration is performed till convergence using the sub-Jacobian
+
+* One Newton step is performed for the outer variables with inner held fixed (using its sub-Jacobian)
+
+* This process is repeated till convergence criterion is met for the full system (same as in Newton)
 
 ## How to install and execute?
 
