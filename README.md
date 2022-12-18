@@ -34,11 +34,11 @@ $\lambda_{d} = 10^{-4}$
 
 $$
 u' = 0.25 * \begin{bmatrix}
-\lambda_a & \dots & 0 & 0 & \dots & 0 \\
-\vdots & \ddots & \vdots & \vdots & \ddots & \vdots \\
-0 & \dots & \lambda_b & 0 & \dots & 0 \\
-0 & \dots & 0 & \lambda_c & \dots & 0 \\
-\vdots & \ddots & \vdots & \vdots & \ddots & \vdots \\
+\lambda_a & \dots & 0 & 0 & \dots & 0 \newline
+\vdots & \ddots & \vdots & \vdots & \ddots & \vdots \newline
+0 & \dots & \lambda_b & 0 & \dots & 0 \newline
+0 & \dots & 0 & \lambda_c & \dots & 0 \newline
+\vdots & \ddots & \vdots & \vdots & \ddots & \vdots \newline
 0 & \dots & 0 & 0 & \dots & \lambda_d
 \end{bmatrix} u^{4}
 $$
