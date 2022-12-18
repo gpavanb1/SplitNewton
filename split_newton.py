@@ -1,3 +1,4 @@
+import logging
 from numpy import Inf, concatenate
 from newton import newton, criterion
 from copy import deepcopy
@@ -6,7 +7,12 @@ from copy import deepcopy
 def attach(x, y):
     return concatenate([x, y])
 
-def split_newton(df, J, x0, loc, maxiter=100, sparse=False):
+# Specify non-zero dt0 for pseudo-transient continuation
+def split_newton(df, J, x0, loc, maxiter=Inf, sparse=False, dt0=0, dtmax=1., armijo=False):
+    if dt0 < 0 or dtmax < 0:
+        raise Exception("Must specify positive dt0 and dtmax")
+    dt = dt0
+
     if loc > len(x0):
         raise Exception('Incorrect split location')
 
@@ -18,22 +24,33 @@ def split_newton(df, J, x0, loc, maxiter=100, sparse=False):
 
     crit = Inf
 
-    while crit >= 1:
+    iter = 0
+    while crit >= 1  and iter < maxiter:
+        # B Cycle
         dfb = lambda x: df(attach(xa, x))[loc:]
         Jb = lambda x: J(attach(xa, x))[loc:, loc:]
-        xb, sb = newton(dfb, Jb, xb, maxiter, sparse=sparse)
-        print("B", xb, sb)
+        xb, sb, local_iter = newton(dfb, Jb, xb, maxiter, sparse, dt, dtmax, armijo)
+        logging.debug(f"B cycle: {xb}, {sb}")
+        logging.debug(f"B iterations: {local_iter}")
 
+        # A Cycle
         dfa = lambda x: df(attach(x, xb))[:loc]
         Ja = lambda x: J(attach(x, xb))[:loc, :loc]
-        xa, sa = newton(dfa, Ja, xa, 1, sparse=sparse)
-        print("A", xa, sa)
+        xa, sa, local_iter = newton(dfa, Ja, xa, 1, sparse, dt, dtmax, armijo)
+        logging.debug(f"A cycle: {xa}, {sa}")
+        logging.debug(f"A iterations: {local_iter}")
 
+        # Construct new x and step
         xnew = attach(xa, xb)
         s = xnew - x
+        
+        # Check convergence
         crit = criterion(x, s)
-        print(x, s, crit)
+        logging.info(f"{x}, {s}, {crit}")
+        
+        # Update x
         x = xnew
+        iter += 1
 
-    return x, s
+    return x, s, iter
     
