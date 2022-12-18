@@ -9,6 +9,31 @@ def attach(x, y):
 
 # Specify non-zero dt0 for pseudo-transient continuation
 def split_newton(df, J, x0, loc, maxiter=Inf, sparse=False, dt0=0, dtmax=1., armijo=False):
+    """
+    Unbounded SPLIT Newton with pseudo-transient continuation
+    (SER criterion for timestep modification) and Armijo rule
+    https://ctk.math.ncsu.edu/TALKS/Purdue.pdf
+
+    Operations are preferred to return numpy arrays
+
+    Arguments
+    ---------
+        df: Function to compute gradient of objective
+        J: Function to compute Jacobian of gradient
+        x0: ndarray, Seed location
+        loc: int, Location at which to split the system
+        maxiter: int, Maximum number of iterations
+        sparse: bool, Use sparse or dense linear solver
+        dt0: float, Initial pseudo-timestep size
+        dtmax: float, Maximum pseudo-timestep size
+        armijo: bool, Apply Armijo rule to choose step fraction
+
+    Returns
+    -------
+        x: ndarray, Final solution
+        s: ndarray, Final step
+        iter: int, Number of iterations
+    """
     if dt0 < 0 or dtmax < 0:
         raise Exception("Must specify positive dt0 and dtmax")
     dt = dt0

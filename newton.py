@@ -9,11 +9,33 @@ def criterion(x, s, abs=1e-5, rel=1e-6):
     return la.norm(s/(x*rel + abs))
 
 
-# Find df = 0 or extrema of f
-# Specify non-zero dt0 for pseudo-transient continuation
-# SER criterion for timestep modification
-# https://ctk.math.ncsu.edu/TALKS/Purdue.pdf
-def newton(df, J, x0, maxiter=Inf, sparse=False, dt0=0, dtmax=1., armijo=False):
+
+def newton(df, J, x0, maxiter=Inf, sparse=False, dt0=0., dtmax=1., armijo=False):
+    """
+    Unbounded Newton with pseudo-transient continuation
+    (SER criterion for timestep modification) and Armijo rule
+    https://ctk.math.ncsu.edu/TALKS/Purdue.pdf
+
+    Operations are preferred to return numpy arrays
+
+    Arguments
+    ---------
+        df: Function to compute gradient of objective
+        J: Function to compute Jacobian of gradient
+        x0: ndarray, Seed location
+        maxiter: int, Maximum number of iterations
+        sparse: bool, Use sparse or dense linear solver
+        dt0: float, Initial pseudo-timestep size
+        dtmax: float, Maximum pseudo-timestep size
+        armijo: bool, Apply Armijo rule to choose step fraction
+
+    Returns
+    -------
+        x: ndarray, Final solution
+        s: ndarray, Final step
+        iter: int, Number of iterations
+    """
+
     if dt0 < 0 or dtmax < 0:
         raise Exception("Must specify positive dt0 and dtmax")
     dt = dt0
