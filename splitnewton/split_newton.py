@@ -1,7 +1,7 @@
 import logging
-from numpy import Inf, concatenate
-from newton import newton, criterion
 from copy import deepcopy
+from numpy import Inf, concatenate
+from splitnewton.newton import newton, criterion
 
 
 def attach(x, y):

@@ -1,8 +1,8 @@
 import logging
-from numpy import Inf, identity
 import numpy.linalg as la
-from scipy import sparse as sp
 from copy import deepcopy
+from numpy import Inf, identity
+from scipy import sparse as sp
 
 
 def criterion(x, s, abs=1e-5, rel=1e-6):
