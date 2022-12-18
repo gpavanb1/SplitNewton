@@ -32,16 +32,16 @@ and the second system
 $\lambda_{c} = 10^{-1}$
 $\lambda_{d} = 10^{-4}$
 
-$
-\begin{bmatrix}
+$$
+u' = 0.25 * \begin{bmatrix}
 \lambda_a & \dots & 0 & 0 & \dots & 0 \\
 \vdots & \ddots & \vdots & \vdots & \ddots & \vdots \\
 0 & \dots & \lambda_b & 0 & \dots & 0 \\
 0 & \dots & 0 & \lambda_c & \dots & 0 \\
 \vdots & \ddots & \vdots & \vdots & \ddots & \vdots \\
 0 & \dots & 0 & 0 & \dots & \lambda_d
-\end{bmatrix}
-$
+\end{bmatrix} u^{4}
+$$
 
 For N=5000 (with no backtracking and pseudo-transient continuation), 
 
