@@ -22,6 +22,18 @@ func, der, hess = set_functions(mode)
 dt0 = 0.0
 dtmax = 0.1
 
+# Split Newton
+start = time()
+print('Starting Split-Newton...')
+xf, _, iter = split_newton(der, hess, x0, int(len(x0)/2), sparse=True, dt0=dt0, dtmax=dtmax)
+print("Final root: ", xf)
+print("Final Residual: ", func(xf))
+print(f"Elapsed time: {time() - start}")
+print(f"Total iterations: {iter}")
+input('')
+
+print('-'* 20)
+
 # Newton
 start = time()
 print('Starting Newton...')
@@ -32,14 +44,5 @@ print(f"Elapsed time: {time() - start}")
 print(f"Total iterations: {iter}")
 input('')
 
-print('-'* 20)
 
-# Split Newton
-start = time()
-print('Starting Split-Newton...')
-xf, _, iter = split_newton(der, hess, x0, int(len(x0)/2), sparse=True, dt0=dt0, dtmax=dtmax)
-print("Final root: ", xf)
-print("Final Residual: ", func(xf))
-print(f"Elapsed time: {time() - start}")
-print(f"Total iterations: {iter}")
-input('')
+

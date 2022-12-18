@@ -1,9 +1,9 @@
 import numpy as np
 
-lambda_a = 4
+lambda_a = 6
 lambda_b = 2
 lambda_c = -1
-lambda_d = -2
+lambda_d = -4
 
 def common_init(x0):
     la = int(len(x0)/2)
