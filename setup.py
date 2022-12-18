@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='SplitNewton',
-      version='0.1.3',
+      version='0.1.4',
       description='Split Newton Solver',
       url='https://github.com/gpavanb1/SplitNewton',
       author='gpavanb1',

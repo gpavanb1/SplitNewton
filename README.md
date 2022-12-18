@@ -41,7 +41,10 @@ and the second system
 $\lambda_{c} = 10^{-1}$
 $\lambda_{d} = 10^{-4}$
 
-$ F(u) = \lambda_{a}u^{4}_{1} + ... + \lambda_{b}u^{4}_{\lfloor N/2 \rfloor} + \lambda_{c}u^{4}_{\lceil N/2 \rceil} + ... + \lambda_{d} u^{4}_{N}$
+and using `logspace` for variation in $\lambda_{i}$
+
+
+$$ F(u) = \lambda_{a} u^{4}_{1} + ... + \lambda_{b} u^{4}_{\lfloor N/2 \rfloor} + \lambda_{c} u^{4}_{\lceil N/2 \rceil} + ... + \lambda_{d} u^{4}_{N}$$
 
 $$
 J(u) = 3 * \begin{bmatrix}
