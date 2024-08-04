@@ -3,6 +3,9 @@ import numpy.linalg as la
 from copy import deepcopy
 from numpy import inf, identity
 from scipy import sparse as sp
+from math import ulp
+
+EPS = ulp(1.0)
 
 
 def criterion(x, s, abs=1e-5, rel=1e-6):
@@ -13,7 +16,16 @@ def check_within_bounds(x0, bounds):
     if bounds is None:
         return True
 
+     # Check if valid format of bounds
+    if len(bounds) != 2:
+        raise Exception(
+            "Bounds must be a 2 lists, with lower and upper bounds of each dimension")
+
     lower, upper = bounds
+    if len(lower) != len(x0) or len(upper) != len(x0):
+        raise Exception(
+            "Each bounds list must be as long as the solution vector")
+
     for i in range(len(x0)):
         if not (lower[i] <= x0[i] <= upper[i]):
             return False
@@ -75,7 +87,7 @@ def newton(df, J, x0, maxiter=inf, sparse=False, dt0=0., dtmax=1., armijo=False,
         # Choose solver based on sparsity
         # Note that the final step is -s
         if sparse:
-            s, info = sp.linalg.gmres(sp.csr_matrix(jac), dfx)
+            s, info = sp.linalg.gmres(sp.csr_matrix(jac), dfx, atol='legacy')
             if info != 0:
                 logging.warning("GMRES not converged")
         else:
@@ -100,15 +112,7 @@ def newton(df, J, x0, maxiter=inf, sparse=False, dt0=0., dtmax=1., armijo=False,
         # Apply bounds
         ####
         if bounds is not None:
-            # Check if valid format of bounds
-            if len(bounds) != 2:
-                raise Exception(
-                    "Bounds must be a 2 lists, with lower and upper bounds of each dimension")
             lower, upper = bounds
-            if len(lower) != len(x) or len(upper) != len(x):
-                raise Exception(
-                    "Each bounds list must be as long as the solution vector")
-
             # Set the scaling factor as the highest damping that must be done
             best_scaling = 1.0
             for i in range(len(x)):
@@ -143,6 +147,6 @@ def newton(df, J, x0, maxiter=inf, sparse=False, dt0=0., dtmax=1., armijo=False,
 
         # Update timestep
         # No if condition as much faster directly
-        dt = min(dt0*f0/fn, dtmax)
+        dt = min(dt0*f0/(fn + EPS), dtmax)
 
     return x, s, iter
