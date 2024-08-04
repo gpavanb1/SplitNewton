@@ -1,6 +1,6 @@
 import logging
 from copy import deepcopy
-from numpy import Inf, concatenate
+from numpy import inf, concatenate
 from splitnewton.newton import newton, criterion
 
 
@@ -10,7 +10,7 @@ def attach(x, y):
 # Specify non-zero dt0 for pseudo-transient continuation
 
 
-def split_newton(df, J, x0, loc, maxiter=Inf, sparse=False, dt0=0, dtmax=1., armijo=False, bounds=None, bound_fac=0.8):
+def split_newton(df, J, x0, loc, maxiter=inf, sparse=False, dt0=0, dtmax=1., armijo=False, bounds=None, bound_fac=0.8):
     """
     Unbounded SPLIT Newton with pseudo-transient continuation
     (SER criterion for timestep modification) and Armijo rule
@@ -49,9 +49,9 @@ def split_newton(df, J, x0, loc, maxiter=Inf, sparse=False, dt0=0, dtmax=1., arm
     xb = deepcopy(x0[loc:])
     x = deepcopy(x0)
 
-    s = Inf
+    s = inf
 
-    crit = Inf
+    crit = inf
 
     iter = 0
     while crit >= 1 and iter < maxiter:

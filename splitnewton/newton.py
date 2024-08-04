@@ -1,7 +1,7 @@
 import logging
 import numpy.linalg as la
 from copy import deepcopy
-from numpy import Inf, identity
+from numpy import inf, identity
 from scipy import sparse as sp
 
 
@@ -20,7 +20,7 @@ def check_within_bounds(x0, bounds):
     return True
 
 
-def newton(df, J, x0, maxiter=Inf, sparse=False, dt0=0., dtmax=1., armijo=False, bounds=None, bound_fac=0.8):
+def newton(df, J, x0, maxiter=inf, sparse=False, dt0=0., dtmax=1., armijo=False, bounds=None, bound_fac=0.8):
     """
     Unbounded Newton with pseudo-transient continuation
     (SER criterion for timestep modification) and Armijo rule
@@ -58,8 +58,8 @@ def newton(df, J, x0, maxiter=Inf, sparse=False, dt0=0., dtmax=1., armijo=False,
 
     x = deepcopy(x0)
     f0 = la.norm(df(x0))
-    s = Inf
-    crit = Inf
+    s = inf
+    crit = inf
 
     iter = 0
     while crit >= 1 and iter < maxiter:
