@@ -1,8 +1,9 @@
 # SplitNewton
 
 [![Downloads](https://pepy.tech/badge/splitnewton)](https://pepy.tech/project/splitnewton)
+![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)
 
-Unbounded SPLIT [Newton](https://en.wikipedia.org/wiki/Newton%27s_method) with [pseudo-transient continuation
+Bounded, SPLIT [Newton](https://en.wikipedia.org/wiki/Newton%27s_method) with [pseudo-transient continuation
 ](https://ctk.math.ncsu.edu/TALKS/Purdue.pdf) and [backtracking](https://en.wikipedia.org/wiki/Backtracking_line_search)
 
 Good for ill-conditioned problems where there are two different sets of systems
@@ -64,6 +65,10 @@ For N=5000 (with no backtracking and pseudo-transient continuation),
 | Split Newton    |    9 seconds |  32   |
 | Newton |  not converged > 1 min  | NA  |
 
+## How to test?
+You can run tests with the `pytest` framework
+
+The coverage reports can be generated with `pytest-cov` using `pytest --cov=splitnewton`
 
 ## Whom to contact?
 

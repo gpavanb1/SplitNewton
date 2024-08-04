@@ -1,5 +1,7 @@
 import pytest
+import logging
 import numpy as np
+from scipy.sparse import csr_matrix
 import numpy.linalg as la
 from scipy.optimize import rosen, rosen_der, rosen_hess
 from splitnewton.newton import criterion, check_within_bounds, newton
@@ -52,6 +54,22 @@ def test_negative_dt0():
         newton(der, hess, x0, dt0=-1.)
 
 
+def test_pseudotransient():
+    x0 = np.array([4., 4.])
+    expected_step = np.array([-2., -2.])
+    # Function values and gradients
+
+    def df(x):
+        return x - 1
+
+    def J(x):
+        return np.eye(len(x))
+    # Run the Newton solver with Armijo rule
+    x, step, iterations = newton(
+        df, J, x0, maxiter=1, sparse=True, dt0=2.)
+    assert np.allclose(step, expected_step, atol=1e-5)
+
+
 def test_invalid_seed():
     x0 = np.array([2., 2.])
     bounds = [[0., 0.], [1., 1.]]
@@ -77,6 +95,33 @@ def test_newton_with_bounds():
     x, s, iter = newton(der, hess, x0, bounds=bounds)
     assert np.allclose(x, x_expected, atol=1e-5)
     assert np.allclose(0.0, rosen(x), atol=1e-5)
+
+
+def test_exact_bounds():
+    x0 = np.array([0., 0.])
+    bounds = [[0., 0.], [0., 0.]]
+    func, der, hess = rosen, rosen_der, rosen_hess
+    expected_step = [0., 0.]
+    x, s, iter = newton(der, hess, x0, bounds=bounds, maxiter=1)
+    assert np.allclose(s, expected_step, atol=1e-5)
+
+
+def test_sparse_singular(caplog):
+    x0 = np.array([0., 0.])
+    bounds = [[0., 0.], [0., 0.]]
+    # Function values and gradients
+    EPS = 1e-16
+
+    def df(x):
+        return np.array([1.0, 1.0])  # Simple gradient
+
+    def J(x):
+        A = np.array([[1, 2], [2, 4 + EPS]])
+        return csr_matrix(A)
+
+    with caplog.at_level(logging.WARNING):
+        x, s, iter = newton(df, J, x0, bounds=bounds, sparse=True)
+    assert "GMRES not converged" in caplog.text
 
 
 def test_armijo_rule():
