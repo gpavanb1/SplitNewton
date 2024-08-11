@@ -1,6 +1,7 @@
 import argparse
 import logging
 import numpy as np
+from scipy import sparse as sp
 from timeit import default_timer as time
 from splitnewton.newton import newton
 from splitnewton.split_newton import split_newton
@@ -12,7 +13,7 @@ from examples.demo_func import test_func, test_der, test_hess
 
 def set_functions(mode):
     if mode == "ROSENBROCK":
-        return rosen, rosen_der, rosen_hess
+        return rosen, rosen_der, lambda x: sp.csr_matrix(rosen_hess(x))
     else:
         return test_func, test_der, test_hess
 
