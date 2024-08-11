@@ -80,14 +80,16 @@ def newton(df, J, x0, maxiter=inf, sparse=False, dt0=0., dtmax=1., armijo=False,
         # Apply pseudo-transient continuation (diagonal modification) if required
         jac = J(x)
         if dt != 0:
-            jac += (1/dt) * identity(len(x))
+            id_matrix = sp.identity(
+                len(x), format='csr') if sparse else identity(len(x))
+            jac += (1/dt) * id_matrix
         dfx = df(x)
         fn = la.norm(dfx)
 
         # Choose solver based on sparsity
         # Note that the final step is -s
         if sparse:
-            s, info = sp.linalg.gmres(sp.csr_matrix(jac), dfx, atol='legacy')
+            s, info = sp.linalg.gmres(jac, dfx)
             if info != 0:
                 logging.warning("GMRES not converged")
         else:

@@ -1,6 +1,7 @@
 import logging
 from copy import deepcopy
 from numpy import inf, concatenate
+from scipy.sparse import csr_matrix
 from splitnewton.newton import newton, criterion
 
 
@@ -57,7 +58,14 @@ def split_newton(df, J, x0, loc, maxiter=inf, sparse=False, dt0=0, dtmax=1., arm
     while crit >= 1 and iter < maxiter:
         # B Cycle
         def dfb(x): return df(attach(xa, x))[loc:]
-        def Jb(x): return J(attach(xa, x))[loc:, loc:]
+
+        def Jb(x):
+            Jb_matrix = J(attach(xa, x))[loc:, loc:]
+            if sparse:
+                return csr_matrix(Jb_matrix)
+            else:
+                return Jb_matrix
+
         local_bounds = [bounds[0][loc:], bounds[1]
                         [loc:]] if bounds is not None else None
         xb, sb, local_iter = newton(
@@ -67,7 +75,14 @@ def split_newton(df, J, x0, loc, maxiter=inf, sparse=False, dt0=0, dtmax=1., arm
 
         # A Cycle
         def dfa(x): return df(attach(x, xb))[:loc]
-        def Ja(x): return J(attach(x, xb))[:loc, :loc]
+
+        def Ja(x):
+            Ja_matrix = J(attach(x, xb))[:loc, :loc]
+            if sparse:
+                return csr_matrix(Ja_matrix)
+            else:
+                return Ja_matrix
+
         local_bounds = [bounds[0][:loc], bounds[1]
                         [:loc]] if bounds is not None else None
         xa, sa, local_iter = newton(
