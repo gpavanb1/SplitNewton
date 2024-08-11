@@ -62,7 +62,7 @@ For N=5000 (with no backtracking and pseudo-transient continuation),
 
 | Method    | Time       | Iterations    |
 |-----------|------------|---------------|
-| Split Newton    |    9 seconds |  32   |
+| Split Newton    |    20 seconds |  45   |
 | Newton |  not converged > 1 min  | NA  |
 
 ## How to test?
