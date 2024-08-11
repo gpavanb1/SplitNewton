@@ -16,7 +16,7 @@ def J_example(x):
 # Test comparison between newton and split_newton
 
 
-def test_newton_vs_split_newton():
+def test_newton_vs_split_newton_sparse():
     x0 = np.array([0.5, 1.5, 0.5, 1.5], dtype=np.float64)
     bounds = [[0.]*4, [3.]*4]
     loc = 2  # Split location
@@ -28,6 +28,27 @@ def test_newton_vs_split_newton():
     # Run split_newton solver
     x_opt_split_newton, step_split_newton, iterations_split_newton = split_newton(
         df_example, J_example, x0, loc, sparse=True, dt0=0.1, dtmax=1.0, armijo=True, bounds=bounds)
+
+    # Compare the results
+    np.testing.assert_allclose(
+        x_opt_newton, x_opt_split_newton, rtol=1e-6, atol=1e-4)
+    np.testing.assert_allclose(
+        step_newton, step_split_newton, rtol=1e-6, atol=1e-4)
+    assert iterations_newton <= iterations_split_newton
+
+
+def test_newton_vs_split_newton_dense():
+    x0 = np.array([0.5, 1.5, 0.5, 1.5], dtype=np.float64)
+    bounds = [[0.]*4, [3.]*4]
+    loc = 2  # Split location
+
+    # Run newton solver
+    x_opt_newton, step_newton, iterations_newton = newton(
+        df_example, J_example, x0, sparse=False, dt0=0.1, dtmax=1.0, armijo=True, bounds=bounds)
+
+    # Run split_newton solver
+    x_opt_split_newton, step_split_newton, iterations_split_newton = split_newton(
+        df_example, J_example, x0, loc, sparse=False, dt0=0.1, dtmax=1.0, armijo=True, bounds=bounds)
 
     # Compare the results
     np.testing.assert_allclose(
