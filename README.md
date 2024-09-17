@@ -2,6 +2,7 @@
 
 [![Downloads](https://pepy.tech/badge/splitnewton)](https://pepy.tech/project/splitnewton)
 ![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)
+[![DOI](https://zenodo.org/badge/579596882.svg)](https://zenodo.org/doi/10.5281/zenodo.13774449)
 
 Bounded, SPLIT [Newton](https://en.wikipedia.org/wiki/Newton%27s_method) with [pseudo-transient continuation
 ](https://ctk.math.ncsu.edu/TALKS/Purdue.pdf) and [backtracking](https://en.wikipedia.org/wiki/Backtracking_line_search)
@@ -74,3 +75,19 @@ The coverage reports can be generated with `pytest-cov` using `pytest --cov=spli
 
 Please direct your queries to [gpavanb1](http://github.com/gpavanb1)
 for any questions.
+
+## Citing
+
+If you are using `SplitNewton` in any scientific work, please make sure to cite as follows
+```
+@software{pavan_b_govindaraju_2024_13774450,
+  author       = {Pavan B Govindaraju},
+  title        = {gpavanb1/SplitNewton: v0.2.1},
+  month        = sep,
+  year         = 2024,
+  publisher    = {Zenodo},
+  version      = {v0.2.1},
+  doi          = {10.5281/zenodo.13774450},
+  url          = {https://doi.org/10.5281/zenodo.13774450}
+}
+```
