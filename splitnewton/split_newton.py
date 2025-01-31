@@ -5,101 +5,76 @@ from scipy.sparse import csr_matrix
 from splitnewton.newton import newton, criterion
 
 
-def attach(x, y):
-    return concatenate([x, y])
-
-# Specify non-zero dt0 for pseudo-transient continuation
-
-
-def split_newton(df, J, x0, loc, maxiter=inf, sparse=False, dt0=0, dtmax=1., armijo=False, bounds=None, bound_fac=0.8):
+def split_newton(x0, locs, df, J, maxiter=100, sparse=True, dt0=0., dtmax=1e-1, armijo=False, bounds=None):
     """
-    Unbounded SPLIT Newton with pseudo-transient continuation
-    (SER criterion for timestep modification) and Armijo rule
-    https://ctk.math.ncsu.edu/TALKS/Purdue.pdf
+    Solve a nonlinear system using a hierarchical split Newton method.
 
-    Operations are preferred to return numpy arrays
+    Arguments:
+        x0: Initial guess (full system state).
+        locs: List of split locations.
+        df: Function to compute the residual.
+        J: Function to compute the Jacobian.
+        maxiter: Maximum number of global iterations.
+        sparse: Whether to use sparse matrices.
+        dt0, dtmax: Step size control for Newton.
+        armijo: Armijo line search flag.
+        bounds: Tuple (lower, upper bounds) for constrained optimization.
 
-    Arguments
-    ---------
-        df: Function to compute gradient of objective
-        J: Function to compute Jacobian of gradient
-        x0: ndarray, Seed location
-        loc: int, Location at which to split the system
-        maxiter: int, Maximum number of iterations
-        sparse: bool, Use sparse or dense linear solver
-        dt0: float, Initial pseudo-timestep size
-        dtmax: float, Maximum pseudo-timestep size
-        armijo: bool, Apply Armijo rule to choose step fraction
-        bounds: list of 2-lists, each of size len(x) that contain lower and upper bound
-        bound_fac: damping factor by which solver must step to avoid crossing limits
-
-    Returns
-    -------
-        x: ndarray, Final solution
-        s: ndarray, Final step
-        iter: int, Number of iterations
+    Returns:
+        x: Solution vector.
+        s: Step size vector.
+        iter: Number of iterations.
     """
-    if dt0 < 0 or dtmax < 0:
-        raise Exception("Must specify positive dt0 and dtmax")
-    dt = dt0
 
-    if loc > len(x0):
-        raise Exception('Incorrect split location')
+    # Validate split locations
+    for i in locs:
+        if i < 0 or i > len(x0):
+            raise ValueError('Incorrect split location')
 
-    xa = deepcopy(x0[:loc])
-    xb = deepcopy(x0[loc:])
-    x = deepcopy(x0)
+    # Base case: if no splits remain, solve with Newton directly
+    if len(locs) == 0:
+        return newton(df, J, x0, maxiter, sparse, dt0, dtmax, armijo, bounds)
 
-    s = inf
+    # Split x0 into xa and xb
+    loc = locs[0]
+    xa, xb = deepcopy(x0[:loc]), deepcopy(x0[loc:])
 
-    crit = inf
+    # Define residual and Jacobian for xa (keeping xb fixed)
+    def dfa(x): return df(concatenate((x, xb)))[:loc]
 
-    iter = 0
+    def Ja(x):
+        J_matrix = J(concatenate((x, xb)))[:loc, :loc]
+        return csr_matrix(J_matrix) if sparse else J_matrix
+
+    # Define residual and Jacobian for xb (keeping xa fixed)
+    def dfb(x): return df(concatenate((xa, x)))[loc:]
+
+    def Jb(x):
+        J_matrix = J(concatenate((xa, x)))[loc:, loc:]
+        return csr_matrix(J_matrix) if sparse else J_matrix
+
+    # Adjust locs for recursion (relative to xb)
+    new_locs = [l - loc for l in locs[1:]]
+
+    # Adjust bounds for recursion
+    bounds_a = ([b[:loc] for b in bounds] if bounds else None)
+    bounds_b = ([b[loc:] for b in bounds] if bounds else None)
+
+    x, s, crit, iter = deepcopy(x0), inf, inf, 0
+
     while crit >= 1 and iter < maxiter:
-        # B Cycle
-        def dfb(x): return df(attach(xa, x))[loc:]
+        # Solve rightmost subsystem recursively
+        xb, _, _ = split_newton(xb, new_locs, dfb, Jb,
+                                maxiter, sparse, dt0, dtmax, armijo, bounds_b)
 
-        def Jb(x):
-            Jb_matrix = J(attach(xa, x))[loc:, loc:]
-            if sparse:
-                return csr_matrix(Jb_matrix)
-            else:
-                return Jb_matrix
+        # One Newton step for left subsystem
+        xa, _, _ = newton(dfa, Ja, xa, 1, sparse, dt0, dtmax, armijo, bounds_a)
 
-        local_bounds = [bounds[0][loc:], bounds[1]
-                        [loc:]] if bounds is not None else None
-        xb, sb, local_iter = newton(
-            dfb, Jb, xb, maxiter, sparse, dt, dtmax, armijo, local_bounds)
-        logging.debug(f"B cycle: {xb}, {sb}")
-        logging.debug(f"B iterations: {local_iter}")
+        # Construct full x and check convergence
+        xnew = concatenate((xa, xb))
+        s, crit = xnew - x, criterion(x, s)
 
-        # A Cycle
-        def dfa(x): return df(attach(x, xb))[:loc]
-
-        def Ja(x):
-            Ja_matrix = J(attach(x, xb))[:loc, :loc]
-            if sparse:
-                return csr_matrix(Ja_matrix)
-            else:
-                return Ja_matrix
-
-        local_bounds = [bounds[0][:loc], bounds[1]
-                        [:loc]] if bounds is not None else None
-        xa, sa, local_iter = newton(
-            dfa, Ja, xa, 1, sparse, dt, dtmax, armijo, local_bounds)
-        logging.debug(f"A cycle: {xa}, {sa}")
-        logging.debug(f"A iterations: {local_iter}")
-
-        # Construct new x and step
-        xnew = attach(xa, xb)
-        s = xnew - x
-
-        # Check convergence
-        crit = criterion(x, s)
         logging.info(f"{x}, {s}, {crit}")
-
-        # Update x
-        x = xnew
-        iter += 1
+        x, iter = xnew, iter + 1
 
     return x, s, iter
