@@ -39,7 +39,7 @@ dtmax = 0.1
 start = time()
 print('Starting Split-Newton...')
 xfa, _, iter = split_newton(
-    x0, [len(x0)//2], der, hess, maxiter=100, sparse=True, dt0=dt0, dtmax=dtmax)
+    der, hess, x0, [len(x0)//2], maxiter=100, sparse=True, dt0=dt0, dtmax=dtmax)
 print("Final root: ", xfa)
 print("Final Residual: ", func(xfa))
 print(f"Elapsed time: {time() - start}")
@@ -52,7 +52,7 @@ print('-' * 20)
 start = time()
 print('Starting Hierarchical Split-Newton...')
 xfb, _, iter = split_newton(
-    x0, [len(x0)//4, 3*len(x0)//4, 7*len(x0)//8], der, hess, maxiter=100, sparse=True, dt0=dt0, dtmax=dtmax)
+    der, hess, x0, [len(x0)//4, 3*len(x0)//4, 7*len(x0)//8], maxiter=100, sparse=True, dt0=dt0, dtmax=dtmax)
 print("Final root: ", xfb)
 print("Final Residual: ", func(xfb))
 print(f"Elapsed time: {time() - start}")

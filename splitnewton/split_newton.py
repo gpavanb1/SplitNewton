@@ -5,15 +5,15 @@ from scipy.sparse import csr_matrix
 from splitnewton.newton import newton, criterion
 
 
-def split_newton(x0, locs, df, J, maxiter=100, sparse=True, dt0=0., dtmax=1e-1, armijo=False, bounds=None):
+def split_newton(df, J, x0, locs, maxiter=100, sparse=True, dt0=0., dtmax=1e-1, armijo=False, bounds=None):
     """
     Solve a nonlinear system using a hierarchical split Newton method.
 
     Arguments:
-        x0: Initial guess (full system state).
-        locs: List of split locations.
         df: Function to compute the residual.
         J: Function to compute the Jacobian.
+        x0: Initial guess (full system state).
+        locs: List of split locations.
         maxiter: Maximum number of global iterations.
         sparse: Whether to use sparse matrices.
         dt0, dtmax: Step size control for Newton.
@@ -64,7 +64,7 @@ def split_newton(x0, locs, df, J, maxiter=100, sparse=True, dt0=0., dtmax=1e-1, 
 
     while crit >= 1 and iter < maxiter:
         # Solve rightmost subsystem recursively
-        xb, _, _ = split_newton(xb, new_locs, dfb, Jb,
+        xb, _, _ = split_newton(dfb, Jb, xb, new_locs,
                                 maxiter, sparse, dt0, dtmax, armijo, bounds_b)
 
         # One Newton step for left subsystem
