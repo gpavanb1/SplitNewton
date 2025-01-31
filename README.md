@@ -15,13 +15,29 @@ Particular applications include
 
 ## What does 'split' mean?
 
-The system is divided into two and for ease of communication, let's refer to first set of variables as "outer" and the second as "inner".
+The system is divided into multiple segments, and for ease of communication, let’s refer to the first segment of variables as "outer" and the remaining as "inner".
 
-* Holding the outer variables fixed, Newton iteration is performed till convergence using the sub-Jacobian
+* Holding the outer variables fixed, Newton iteration is performed recursively for the inner variables, using the sub-Jacobian associated with them, until convergence is reached.
 
-* One Newton step is performed for the outer variables with inner held fixed (using its sub-Jacobian)
+* One Newton step is then performed for the outer variables, while the inner variables are kept fixed, using the sub-Jacobian for the outer subsystem.
 
-* This process is repeated till convergence criterion is met for the full system (same as in Newton)
+* This process is repeated, alternating between solving the inner and outer subsystems, until the convergence criterion for the entire system (similar to standard Newton) is met.
+
+### Example:
+
+Consider a system of 5 variables, with the split locations at indices [1, 4]. This results in the following segments:
+
+  * `a1` (variables from 0 to 1)
+  * `a2 a3 a4` (variables from 1 to 4)
+  * `a5` (variable at index 4)
+
+1. First, the innermost segment `a5` is solved recursively using Newton's method while holding the variables `a1` and `a2 a3 a4`) fixed. This step is repeated until the convergence criterion for `a5` is met.
+
+2. Next, one Newton step is taken for the segment `a2 a3 a4`, with `a5` held fixed. This step is followed by solving `a5` again till convergence.
+
+3. This alternating process repeats: solving for `a5` until convergence, then one step for `a2 a3 a4`, and so on, until all subsystems converge.
+
+Finally, one Newton step is performed for `a1`, with the other segments fixed. This completes one cycle of the split Newton process.
 
 ## How to install and execute?
 
@@ -38,32 +54,37 @@ Consider the test problem
 
 $\lambda_{a} = 10^{6}$, 
 $\lambda_{b} = 10^{2}$
-
-and the second system
+with the second system,
 $\lambda_{c} = 10^{-1}$
 $\lambda_{d} = 10^{-4}$
+and third system,
+$\lambda_{c} = 10^{-6}$
+$\lambda_{d} = 10^{-8}$
 
 and using `logspace` for variation in $\lambda_{i}$
 
 
-$$ F(u) = \lambda_{a} u^{4}_{1} + ... + \lambda_{b} u^{4}_{\lfloor N/2 \rfloor} + \lambda_{c} u^{4}_{\lceil N/2 \rceil} + ... + \lambda_{d} u^{4}_{N}$$
+$$ F(u) = \lambda_{a} u^{4}_{1} + ... + \lambda_{b} u^{4}_{\lfloor N/3 \rfloor} + \lambda_{c} u^{4}_{\lceil N/3 \rceil} + ... + \lambda_{d} u^{4}_{\lfloor 2N/3 \rfloor} + \lambda_{e} u^{4}_{\lceil 2N/3 \rceil} + ... + \lambda_{f} u^{4}_{N}$$
 
 $$
-J(u) = 3 * \begin{bmatrix}
-\lambda_a & \dots & 0 & 0 & \dots & 0 \newline
-\vdots & \ddots & \vdots & \vdots & \ddots & \vdots \newline
-0 & \dots & \lambda_b & 0 & \dots & 0 \newline
-0 & \dots & 0 & \lambda_c & \dots & 0 \newline
-\vdots & \ddots & \vdots & \vdots & \ddots & \vdots \newline
-0 & \dots & 0 & 0 & \dots & \lambda_d
-\end{bmatrix} u^{2}
+J(u) = 3 \times \begin{bmatrix}
+\lambda_a & \dots & 0 & 0 & \dots & 0 & 0 & \dots & 0 \\
+\vdots & \ddots & \vdots & \vdots & \ddots & \vdots & \vdots & \ddots & \vdots \\
+0 & \dots & \lambda_b & 0 & \dots & 0 & 0 & \dots & 0 \\
+0 & \dots & 0 & \lambda_c & \dots & 0 & 0 & \dots & 0 \\
+\vdots & \ddots & \vdots & \vdots & \ddots & \vdots & \vdots & \ddots & \vdots \\
+0 & \dots & 0 & 0 & \dots & \lambda_d & 0 & \dots & 0 \\
+0 & \dots & 0 & 0 & \dots & 0 & \lambda_e & \dots & 0 \\
+\vdots & \ddots & \vdots & \vdots & \ddots & \vdots & \vdots & \ddots & \vdots \\
+0 & \dots & 0 & 0 & \dots & 0 & 0 & \dots & \lambda_f
+\end{bmatrix} \cdot u^2
 $$
 
 For N=5000 (with no backtracking and pseudo-transient continuation), 
 
 | Method    | Time       | Iterations    |
 |-----------|------------|---------------|
-| Split Newton    |    20 seconds |  45   |
+| Split Newton    |    34 seconds |  33   |
 | Newton |  not converged > 1 min  | NA  |
 
 ## How to test?
