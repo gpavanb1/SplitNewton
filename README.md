@@ -2,7 +2,7 @@
 
 [![Downloads](https://pepy.tech/badge/splitnewton)](https://pepy.tech/project/splitnewton)
 ![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)
-[![DOI](https://zenodo.org/badge/579596882.svg)](https://zenodo.org/doi/10.5281/zenodo.13774449)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14782293.svg)](https://doi.org/10.5281/zenodo.14782293)
 
 Bounded, SPLIT [Newton](https://en.wikipedia.org/wiki/Newton%27s_method) with [pseudo-transient continuation
 ](https://ctk.math.ncsu.edu/TALKS/Purdue.pdf) and [backtracking](https://en.wikipedia.org/wiki/Backtracking_line_search)
@@ -88,9 +88,9 @@ For N=5000 (with no backtracking and pseudo-transient continuation),
 | Newton |  not converged > 1 min  | NA  |
 
 ## How to test?
-You can run tests with the `pytest` framework
+You can run tests with the `pytest` framework using `python -m pytest`
 
-The coverage reports can be generated with `pytest-cov` using `pytest --cov=splitnewton`
+The coverage reports can be generated with `pytest-cov` plugin using `python -m pytest --cov=splitnewton`
 
 ## Whom to contact?
 
@@ -101,14 +101,14 @@ for any questions.
 
 If you are using `SplitNewton` in any scientific work, please make sure to cite as follows
 ```
-@software{pavan_b_govindaraju_2024_13774450,
+@software{pavan_b_govindaraju_2025_14782293,
   author       = {Pavan B Govindaraju},
-  title        = {gpavanb1/SplitNewton: v0.2.1},
-  month        = sep,
-  year         = 2024,
+  title        = {gpavanb1/SplitNewton: v0.3.1},
+  month        = jan,
+  year         = 2025,
   publisher    = {Zenodo},
-  version      = {v0.2.1},
-  doi          = {10.5281/zenodo.13774450},
-  url          = {https://doi.org/10.5281/zenodo.13774450}
+  version      = {v0.3.1},
+  doi          = {10.5281/zenodo.14782293},
+  url          = {https://doi.org/10.5281/zenodo.14782293},
 }
 ```
