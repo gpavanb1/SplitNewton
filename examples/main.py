@@ -35,25 +35,26 @@ func, der, hess = set_functions(mode)
 dt0 = 0.0
 dtmax = 0.1
 
-# Split Newton
+# Hierarchical Split Newton
 start = time()
-print('Starting Split-Newton...')
-xf, _, iter = split_newton(der, hess, x0, int(
-    len(x0)/2), sparse=True, dt0=dt0, dtmax=dtmax)
-print("Final root: ", xf)
-print("Final Residual: ", func(xf))
+print('Starting Hierarchical Split-Newton...')
+xfb, _, iter = split_newton(
+    der, hess, x0, [len(x0)//3, 2*len(x0)//3], maxiter=100, sparse=True, dt0=dt0, dtmax=dtmax)
+print("Final root: ", xfb)
+print("Final Residual: ", func(xfb))
 print(f"Elapsed time: {time() - start}")
 print(f"Total iterations: {iter}")
 input('')
 
 print('-' * 20)
 
+
 # Newton
 start = time()
 print('Starting Newton...')
-xf, _, iter = newton(der, hess, x0, sparse=True, dt0=dt0, dtmax=dtmax)
-print("Final root: ", xf)
-print("Final Residual: ", func(xf))
+xfc, _, iter = newton(der, hess, x0, sparse=True, dt0=dt0, dtmax=dtmax)
+print("Final root: ", xfc)
+print("Final Residual: ", func(xfc))
 print(f"Elapsed time: {time() - start}")
 print(f"Total iterations: {iter}")
 input('')
