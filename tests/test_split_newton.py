@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from splitnewton.newton import newton
-from splitnewton.split_newton import split_newton, attach
+from splitnewton.split_newton import split_newton
 
 # Example gradient and Jacobian functions
 
@@ -19,7 +19,7 @@ def J_example(x):
 def test_newton_vs_split_newton_sparse():
     x0 = np.array([0.5, 1.5, 0.5, 1.5], dtype=np.float64)
     bounds = [[0.]*4, [3.]*4]
-    loc = 2  # Split location
+    loc = [2]  # Split location
 
     # Run newton solver
     x_opt_newton, step_newton, iterations_newton = newton(
@@ -40,7 +40,7 @@ def test_newton_vs_split_newton_sparse():
 def test_newton_vs_split_newton_dense():
     x0 = np.array([0.5, 1.5, 0.5, 1.5], dtype=np.float64)
     bounds = [[0.]*4, [3.]*4]
-    loc = 2  # Split location
+    loc = [2]  # Split location
 
     # Run newton solver
     x_opt_newton, step_newton, iterations_newton = newton(
@@ -60,7 +60,7 @@ def test_newton_vs_split_newton_dense():
 
 def test_negative_dt_exception():
     x0 = np.array([0.5, 1.5, 0.5, 1.5], dtype=np.float64)
-    loc = 2
+    loc = [2]
 
     # Test negative dt0
     with pytest.raises(Exception, match="Must specify positive dt0 and dtmax"):
@@ -73,7 +73,7 @@ def test_negative_dt_exception():
 
 def test_incorrect_split_location_exception():
     x0 = np.array([0.5, 1.5, 0.5, 1.5], dtype=np.float64)
-    loc = 5  # Incorrect location, greater than length of x0
+    loc = [5]  # Incorrect location, greater than length of x0
 
     with pytest.raises(Exception, match="Incorrect split location"):
         split_newton(df_example, J_example, x0, loc)
