@@ -27,7 +27,7 @@ loglevel = getattr(logging, args.loglevel.upper())
 logging.basicConfig(level=loglevel)
 
 # Seed
-x0 = np.linspace(21.2, 31.2, 5000)
+x0 = np.linspace(21.2, 31.2, 50)
 
 mode = "TEST"  # or ROSENBROCK
 func, der, hess = set_functions(mode)
@@ -38,22 +38,40 @@ dtmax = 0.1
 # Split Newton
 start = time()
 print('Starting Split-Newton...')
-xf, _, iter = split_newton(der, hess, x0, int(
-    len(x0)/2), sparse=True, dt0=dt0, dtmax=dtmax)
-print("Final root: ", xf)
-print("Final Residual: ", func(xf))
+xfa, _, iter = split_newton(
+    x0, [len(x0)//2], der, hess, maxiter=100, sparse=True, dt0=dt0, dtmax=dtmax)
+print("Final root: ", xfa)
+print("Final Residual: ", func(xfa))
 print(f"Elapsed time: {time() - start}")
 print(f"Total iterations: {iter}")
 input('')
 
 print('-' * 20)
 
+# Hierarchical Split Newton
+start = time()
+print('Starting Hierarchical Split-Newton...')
+xfb, _, iter = split_newton(
+    x0, [len(x0)//4, 3*len(x0)//4, 7*len(x0)//8], der, hess, maxiter=100, sparse=True, dt0=dt0, dtmax=dtmax)
+print("Final root: ", xfb)
+print("Final Residual: ", func(xfb))
+print(f"Elapsed time: {time() - start}")
+print(f"Total iterations: {iter}")
+print("Split and Hierarchical agree/difference: ", "Yes" if np.allclose(
+    xfa, xfb, atol=1e-6) else np.max(np.abs(xfa - xfb)))
+input('')
+
+print('-' * 20)
+
+
 # Newton
 start = time()
 print('Starting Newton...')
-xf, _, iter = newton(der, hess, x0, sparse=True, dt0=dt0, dtmax=dtmax)
-print("Final root: ", xf)
-print("Final Residual: ", func(xf))
+xfc, _, iter = newton(der, hess, x0, sparse=True, dt0=dt0, dtmax=dtmax)
+print("Final root: ", xfc)
+print("Final Residual: ", func(xfc))
 print(f"Elapsed time: {time() - start}")
 print(f"Total iterations: {iter}")
+print("Split and Newton agree/difference: ", "Yes" if np.allclose(
+    xfa, xfc, atol=1e-6) else np.max(np.abs(xfa - xfc)))
 input('')
