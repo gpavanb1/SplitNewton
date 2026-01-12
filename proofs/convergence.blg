@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2020)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: convergence.aux
+The style file: elsarticle-num.bst
+Database file #1: convergence.bib
+You've used 1 entry,
+            2952 wiz_defined-function locations,
+            676 strings with 5244 characters,
+and the built_in function-call counts, 341 in all, are:
+= -- 31
+> -- 7
+< -- 0
++ -- 3
+- -- 2
+* -- 25
+:= -- 64
+add.period$ -- 1
+call.type$ -- 1
+change.case$ -- 1
+chr.to.int$ -- 0
+cite$ -- 1
+duplicate$ -- 8
+empty$ -- 34
+format.name$ -- 3
+if$ -- 76
+int.to.chr$ -- 0
+int.to.str$ -- 1
+missing$ -- 1
+newline$ -- 11
+num.names$ -- 1
+pop$ -- 5
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 18
+stack$ -- 0
+substring$ -- 25
+swap$ -- 1
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 3
+width$ -- 2
+write$ -- 15
