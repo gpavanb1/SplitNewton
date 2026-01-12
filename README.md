@@ -2,7 +2,9 @@
 
 [![Downloads](https://pepy.tech/badge/splitnewton)](https://pepy.tech/project/splitnewton)
 ![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14782293.svg)](https://doi.org/10.5281/zenodo.14782293)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18218196.svg)](https://doi.org/10.5281/zenodo.18218196)
+
+
 
 Bounded, SPLIT [Newton](https://en.wikipedia.org/wiki/Newton%27s_method) with [pseudo-transient continuation
 ](https://ctk.math.ncsu.edu/TALKS/Purdue.pdf) and [backtracking](https://en.wikipedia.org/wiki/Backtracking_line_search)
