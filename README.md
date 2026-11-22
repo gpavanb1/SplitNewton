@@ -2,7 +2,7 @@
 
 [![Downloads](https://pepy.tech/badge/splitnewton)](https://pepy.tech/project/splitnewton)
 ![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18218196.svg)](https://doi.org/10.5281/zenodo.18218196)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13774449.svg)](https://doi.org/10.5281/zenodo.13774449)
 
 
 
