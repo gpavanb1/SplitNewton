@@ -6,3 +6,5 @@ dist
 .DS_Store
 .coverage
 .pytest_cache
+# Lean/Lake: local Mathlib packages and build products
+**/.lake
