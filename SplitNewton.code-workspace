@@ -1,0 +1,13 @@
+{
+  "folders": [
+    {
+      "name": "SplitNewton",
+      "path": "."
+    },
+    {
+      "name": "lean",
+      "path": "proofs/lean"
+    }
+  ],
+  "settings": {}
+}
