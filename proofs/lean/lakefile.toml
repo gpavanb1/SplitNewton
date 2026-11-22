@@ -1,0 +1,23 @@
+# Split-Newton Lean project: Mathlib-backed typecheck of SplitNewton.lean.
+# Toolchain is pinned in lean-toolchain (Lean v4.37.0-rc1, matching Mathlib).
+# From this directory:
+#   lake exe cache get   -- refresh Mathlib oleans if the cache is stale
+#   lake build           -- typecheck SplitNewton.lean (silence + exit 0 = success)
+name = "SplitNewton"
+version = "0.1.0"
+keywords = ["math"]
+defaultTargets = ["SplitNewton"]
+
+[leanOptions]
+pp.unicode.fun = true # pretty-prints `fun a ↦ b`
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+maxSynthPendingDepth = 3
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.37.0-rc1"
+
+[[lean_lib]]
+name = "SplitNewton"
